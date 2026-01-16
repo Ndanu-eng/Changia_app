@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.changia.changia_app.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/groupsFragment"
+        android:name="com.changia.changia_app.GroupsFragment"
+        android:label="Groups"
+        tools:layout="@layout/fragment_groups" />
+
+    <fragment
+        android:id="@+id/walletFragment"
+        android:name="com.changia.changia_app.WalletFragment"
+        android:label="Wallet"
+        tools:layout="@layout/fragment_wallet" />
+
+    <fragment
+        android:id="@+id/chamaFragment"
+        android:name="com.changia.changia_app.ChamaFragment"
+        android:label="Chama"
+        tools:layout="@layout/fragment_chama" />
+
+</navigation>

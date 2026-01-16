@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Internet Permission -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Changia"
+        tools:targetApi="31">
+
+        <!-- ===== PERSON 1: CORE + AUTH + DASHBOARD ===== -->
+
+        <!-- SPLASH ACTIVITY (FIRST SCREEN - LAUNCHER) -->
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Changia.Splash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- LOGIN ACTIVITY -->
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+
+        <!-- REGISTRATION ACTIVITY -->
+        <activity
+            android:name=".RegistrationActivity"
+            android:exported="true"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+
+        <!-- MAIN ACTIVITY (Dashboard with Navigation) -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+
+        <!-- PROFILE ACTIVITY -->
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="true" />
+
+        <!-- ===== PERSON 2: GROUPS MODULE ===== -->
+
+        <!-- CREATE GROUP ACTIVITY -->
+        <activity
+            android:name=".CreateGroupActivity"
+            android:exported="false"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+
+        <!-- GROUP DETAILS ACTIVITY -->
+        <activity
+            android:name=".GroupDetailsActivity"
+            android:exported="false" />
+
+        <!-- MEMBER LIST ACTIVITY -->
+        <activity
+            android:name=".MemberListActivity"
+            android:exported="false" />
+
+        <!-- ===== PERSON 2: CONTRIBUTIONS MODULE ===== -->
+
+        <!-- CONTRIBUTE ACTIVITY -->
+        <activity
+            android:name=".ContributeActivity"
+            android:exported="false"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+
+        <!-- ===== PERSON 2: CHAMA & LOCKING MODULE ===== -->
+
+        <!-- LOCK/UNLOCK REQUEST ACTIVITY (Handles both) -->
+        <activity
+            android:name=".LockRequestActivity"
+            android:exported="false"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+
+        <!-- VOTE ACTIVITY -->
+        <activity
+            android:name=".VoteActivity"
+            android:exported="false" />
+
+        <!-- ===== FRAGMENTS (Declared in MainActivity) ===== -->
+        <!-- Fragments don't need separate entries in Manifest -->
+
+    </application>
+
+</manifest>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Changia</string>
+    <string name="app_tagline">Secure group savings made simple</string>
+
+    <!-- Login Screen -->
+    <string name="welcome_back">Welcome Back</string>
+    <string name="sign_in_to_continue">Sign in to continue</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="enter_pin">Enter 4-digit PIN</string>
+    <string name="forgot_pin">Forgot PIN?</string>
+    <string name="btn_continue">CONTINUE</string> <!-- FIX 1: Changed from 'continue' -->
+    <string name="dont_have_account">Don\'t have an account? Register</string> <!-- FIX 2: Added escape character -->
+
+    <!-- Home Screen -->
+    <string name="total_balance">Total Balance</string>
+    <string name="quick_actions">Quick Actions</string>
+    <string name="my_groups">My Groups</string>
+    <string name="upcoming_payout">Upcoming Payout</string>
+
+    <!-- Profile -->
+    <string name="personal_info">Personal Info</string>
+    <string name="security_pin">Security &amp; PIN</string> <!-- FIX 3: Added &amp; for & -->
+    <string name="notifications">Notifications</string>
+    <string name="help_support">Help &amp; Support</string> <!-- FIX 4: Added &amp; for & -->
+    <string name="logout">LOG OUT</string>
+
+    <string name="hi_spencer">Hi, Spencer</string>
+    <!-- GroupsFragment -->
+    <string name="member_count">%d members</string>
+
+    <!-- Create Group Activity -->
+    <string name="create_new_group">Create New Group</string>
+    <string name="start_saving">Start saving with friends &amp; family</string>
+    <string name="group_name">Group Name</string>
+    <string name="group_name_hint">e.g., Wedding Fund</string>
+    <string name="target_amount">Target Amount (KES)</string>
+    <string name="target_amount_hint">e.g., 500000</string>
+    <string name="number_of_members">Number of Members</string>
+    <string name="monthly_contribution">Monthly Contribution (KES)</string>
+    <string name="contribution_frequency">Contribution Frequency</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="create_group_button">CREATE GROUP</string>
+
+    <!-- Group Details -->
+    <string name="wedding_fund">Wedding Fund</string>
+    <string name="kes_540000">KES 540,000</string>
+    <string name="twelve_members">12 members</string>
+    <string name="seventy_five_percent">75% of goal reached</string>
+    <string name="recent_activity">Recent Activity</string>
+    <string name="contribute">💰 Contribute</string>
+    <string name="lock_funds">🔒 Lock Funds</string>
+    <string name="view_all_members">👥 View All Members</string>
+
+    <!-- Vote Activity -->
+    <string name="lock_funds_request">Lock Funds Request</string>
+    <string name="lock_request_details">Betina requested to lock KES 540,000 until wedding date\n\nReason: "Saving for venue deposit"</string>
+    <string name="vote_status">3/12 members have voted</string>
+    <string name="approve">✅ Approve</string>
+    <string name="reject">❌ Reject</string>
+    <string name="vote_info">ℹ️ Majority vote (>50%) decides the outcome</string>
+
+    <!-- Accessibility -->
+    <string name="back_button_desc">Back button</string>
+
+    <string name="reason_for_locking_funds">Reason for locking funds</string>
+    <string name="amount_kes">Amount (KES)</string>
+    <string name="make_contribution">Make Contribution</string>
+    <string name="lock_funds_request_title">Lock Funds Request</string>
+    <string name="submit_request">SUBMIT REQUEST</string>
+    <string name="contribute_now">CONTRIBUTE NOW</string>
+</resources>
