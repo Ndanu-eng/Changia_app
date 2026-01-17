@@ -19,13 +19,14 @@
             android:layout_height="32dp"
             android:src="@drawable/ic_back"
             app:tint="@color/primary_color"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/back_button_desc" />
 
         <!-- Title -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Make Contribution"
+            android:text="@string/make_contribution"
             android:textColor="@color/text_primary"
             android:textSize="28sp"
             android:textStyle="bold" />
@@ -36,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Wedding Fund"
+            android:text="@string/wedding_fund"
             android:textColor="@color/primary_color"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -46,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Current Balance: KES 540,000"
+            android:text="@string/current_balance"
             android:textColor="@color/text_secondary"
             android:textSize="14sp" />
 
@@ -55,7 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Next Payout: Oct 15, 2024"
+            android:text="@string/next_payout"
             android:textColor="@color/text_secondary"
             android:textSize="14sp" />
 
@@ -67,18 +68,17 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             app:boxBackgroundColor="@color/white"
-            app:hint="Amount (KES)"
+            android:hint="@string/amount_kes"
             app:prefixText="KES ">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_amount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter amount"
+                android:hint="@string/enter_amount"
                 android:inputType="numberDecimal"
                 android:maxLines="1"
                 android:text="5000" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Payment Method -->
@@ -86,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="Payment Method"
+            android:text="@string/payment_method"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -102,14 +102,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="M-Pesa" />
+                android:text="@string/mpesa" />
 
             <RadioButton
                 android:id="@+id/rb_visa"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Visa/MasterCard" />
-
+                android:text="@string/visa_mastercard" />
         </RadioGroup>
 
         <!-- Contribute Button -->
@@ -119,7 +118,7 @@
             android:layout_height="56dp"
             android:layout_marginTop="48dp"
             android:backgroundTint="@color/primary_color"
-            android:text="CONTRIBUTE NOW"
+            android:text="@string/contribute_now"
             android:textColor="@color/white"
             android:textSize="16sp" />
 
@@ -128,11 +127,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="🔒 Your payment is secure and encrypted"
+            android:text="@string/secure_payment"
             android:textColor="@color/text_secondary"
             android:textSize="12sp"
             android:gravity="center" />
-
     </LinearLayout>
-
 </ScrollView>

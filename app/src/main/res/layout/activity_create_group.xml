@@ -39,7 +39,7 @@
             android:textColor="@color/text_secondary"
             android:textSize="16sp" />
 
-        <!-- Group Name - FIXED -->
+        <!-- Group Name -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_group_name"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             app:boxBackgroundColor="@color/white"
-            app:hint="@string/group_name">
+            android:hint="@string/group_name">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_group_name"
@@ -57,7 +57,7 @@
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Group Goal - FIXED -->
+        <!-- Group Goal -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_group_goal"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:boxBackgroundColor="@color/white"
-            app:hint="@string/target_amount">
+            android:hint="@string/target_amount">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_group_goal"
@@ -76,39 +76,39 @@
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Member Count - FIXED -->
+        <!-- Member Count -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:boxBackgroundColor="@color/white"
-            app:hint="@string/number_of_members">
+            android:hint="@string/number_of_members">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_member_count"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="e.g., 10"
+                android:hint="@string/member_count_hint"
                 android:inputType="number"
                 android:maxLines="1"
                 android:text="10" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Contribution Amount - FIXED -->
+        <!-- Contribution Amount -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:boxBackgroundColor="@color/white"
-            app:hint="@string/monthly_contribution">
+            android:hint="@string/monthly_contribution">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_contribution_amount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="e.g., 5000"
+                android:hint="@string/contribution_hint"
                 android:inputType="number"
                 android:maxLines="1"
                 android:text="5000" />
@@ -144,7 +144,6 @@
                 android:layout_weight="1"
                 android:checked="true"
                 android:text="@string/monthly" />
-
         </RadioGroup>
 
         <!-- Create Button -->
@@ -157,6 +156,5 @@
             android:text="@string/create_group_button"
             android:textColor="@color/white"
             android:textSize="16sp" />
-
     </LinearLayout>
 </ScrollView>

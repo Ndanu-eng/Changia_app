@@ -19,13 +19,14 @@
             android:layout_height="32dp"
             android:src="@drawable/ic_back"
             app:tint="@color/primary_color"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/back_button_desc" />
 
         <!-- Title -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lock Funds Request"
+            android:text="@string/lock_funds_request"
             android:textColor="@color/text_primary"
             android:textSize="28sp"
             android:textStyle="bold" />
@@ -36,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Wedding Fund"
+            android:text="@string/wedding_fund"
             android:textColor="@color/primary_color"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -46,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Balance: KES 540,000"
+            android:text="@string/balance_kes"
             android:textColor="@color/text_secondary"
             android:textSize="14sp" />
 
@@ -58,17 +59,16 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             app:boxBackgroundColor="@color/white"
-            app:hint="Reason for locking funds">
+            android:hint="@string/reason_for_locking_funds">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_lock_reason"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="e.g., Saving for venue deposit"
+                android:hint="@string/lock_reason_hint"
                 android:inputType="textMultiLine"
                 android:minLines="3"
                 android:maxLines="5" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Info Box -->
@@ -89,7 +89,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="⚠️ Important"
+                    android:text="@string/important"
                     android:textColor="@color/primary_dark"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -98,10 +98,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="• All members must approve this request\n• Funds will be locked until goal reached\n• No withdrawals until unlocked"
+                    android:text="@string/important_info"
                     android:textColor="@color/primary_dark"
                     android:textSize="12sp" />
-
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -112,10 +111,8 @@
             android:layout_height="56dp"
             android:layout_marginTop="48dp"
             android:backgroundTint="@color/primary_color"
-            android:text="SUBMIT REQUEST"
+            android:text="@string/submit_request"
             android:textColor="@color/white"
             android:textSize="16sp" />
-
     </LinearLayout>
-
 </ScrollView>
