@@ -90,9 +90,6 @@
             android:name=".VoteActivity"
             android:exported="false" />
 
-        <!-- ===== FRAGMENTS (Declared in MainActivity) ===== -->
-        <!-- Fragments don't need separate entries in Manifest -->
-
     </application>
 
 </manifest>

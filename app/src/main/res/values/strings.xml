@@ -3,6 +3,7 @@
     <string name="app_name">Changia</string>
     <string name="app_tagline">Secure group savings made simple</string>
 
+
     <!-- Login Screen -->
     <string name="welcome_back">Welcome Back</string>
     <string name="sign_in_to_continue">Sign in to continue</string>
@@ -83,6 +84,50 @@
     <string name="contribute_now">CONTRIBUTE NOW</string>
     <string name="secure_payment">🔒 Your payment is secure and encrypted</string>
 
+    <!-- Navigation Strings (NEWLY ADDED) -->
+    <string name="home">Home</string>
+    <string name="groups">Groups</string>
+    <string name="wallet">Wallet</string>
+    <string name="chama">Chama</string>
+    <string name="account">Account</string>
+    <string name="profile">Profile</string>
+    <string name="settings">Settings</string>
+
+    <!-- New strings for consistency -->
+    <string name="new_group">New Group</string>
+    <string name="view_all">View All</string>
+    <string name="lock_funds_btn">Lock Funds</string>
+
+    <!-- Form Labels -->
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="phone">Phone</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+
+    <!-- Error Messages -->
+    <string name="error_required">This field is required</string>
+    <string name="error_invalid_phone">Invalid phone number</string>
+    <string name="error_invalid_amount">Invalid amount</string>
+    <string name="error_invalid_pin">PIN must be 4 digits</string>
+
+    <!-- Success Messages -->
+    <string name="success_group_created">Group created successfully!</string>
+    <string name="success_contribution">Contribution successful!</string>
+    <string name="success_vote_cast">Vote cast successfully!</string>
+
+    <!-- Loading States -->
+    <string name="loading">Loading…</string>
+    <string name="processing">Processing…</string>
+
+    <!-- Empty States -->
+    <string name="no_groups">No groups yet</string>
+    <string name="no_transactions">No transactions yet</string>
+    <string name="no_notifications">No notifications</string>
+
     <!-- Accessibility -->
     <string name="back_button_desc">Back button</string>
+    <string name="menu_button_desc">Menu button</string>
+    <string name="close_button_desc">Close button</string>
 </resources>

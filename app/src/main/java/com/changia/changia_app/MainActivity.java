@@ -2,22 +2,18 @@ package com.changia.changia_app;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.util.Log;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,16 +27,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.d("DEBUG", "=== MAIN ACTIVITY STARTED ===");
+
         sessionManager = new SessionManager(this);
 
         setupToolbar();
-        setupNavigation();
+        setupNavigation();  // CRITICAL: This MUST be called AFTER setContentView
         setupDrawerHeader();
     }
 
     private void setupToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Log.d("DEBUG", "Toolbar setup complete");
     }
 
     private void setupNavigation() {
@@ -48,8 +47,19 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = findViewById(R.id.nav_view);
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
 
-        // Set up navigation controller
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        Log.d("DEBUG", "Starting navigation setup");
+
+        // **FIXED METHOD: Get NavController from NavHostFragment**
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment);
+
+        if (navHostFragment == null) {
+            Log.e("DEBUG", "ERROR: navHostFragment is NULL!");
+            return;
+        }
+
+        NavController navController = navHostFragment.getNavController();
+        Log.d("DEBUG", "NavController obtained successfully");
 
         // Configure top destinations
         appBarConfiguration = new AppBarConfiguration.Builder(
@@ -60,9 +70,29 @@ public class MainActivity extends AppCompatActivity {
                 .setOpenableLayout(drawerLayout)
                 .build();
 
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
-        NavigationUI.setupWithNavController(bottomNav, navController);
+        // Setup ActionBar
+        try {
+            NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+            Log.d("DEBUG", "ActionBar setup complete");
+        } catch (Exception e) {
+            Log.e("DEBUG", "ActionBar setup failed: " + e.getMessage());
+        }
+
+        // Setup Navigation
+        try {
+            NavigationUI.setupWithNavController(navigationView, navController);
+            Log.d("DEBUG", "Drawer navigation setup complete");
+        } catch (Exception e) {
+            Log.e("DEBUG", "Drawer setup failed: " + e.getMessage());
+        }
+
+        // Setup Bottom Navigation
+        try {
+            NavigationUI.setupWithNavController(bottomNav, navController);
+            Log.d("DEBUG", "Bottom navigation setup complete");
+        } catch (Exception e) {
+            Log.e("DEBUG", "Bottom nav setup failed: " + e.getMessage());
+        }
 
         // Handle drawer menu clicks
         navigationView.setNavigationItemSelectedListener(item -> {
@@ -78,28 +108,44 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // For other items, let NavigationUI handle it
-            return NavigationUI.onNavDestinationSelected(item, navController)
-                    || super.onOptionsItemSelected(item);
+            boolean handled = NavigationUI.onNavDestinationSelected(item, navController);
+            if (handled) {
+                drawerLayout.closeDrawers();
+            }
+            return handled;
         });
+
+        Log.d("DEBUG", "=== NAVIGATION SETUP COMPLETE ===");
     }
 
     private void setupDrawerHeader() {
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        android.view.View headerView = navigationView.getHeaderView(0);
+        try {
+            NavigationView navigationView = findViewById(R.id.nav_view);
+            android.view.View headerView = navigationView.getHeaderView(0);
 
-        tvUserName = headerView.findViewById(R.id.tv_user_name);
-        tvUserPhone = headerView.findViewById(R.id.tv_user_phone);
+            tvUserName = headerView.findViewById(R.id.tv_user_name);
+            tvUserPhone = headerView.findViewById(R.id.tv_user_phone);
 
-        // Set user info from session
-        tvUserName.setText(sessionManager.getUserName());
-        tvUserPhone.setText(sessionManager.getUserPhone());
+            // Set user info from session
+            tvUserName.setText(sessionManager.getUserName());
+            tvUserPhone.setText(sessionManager.getUserPhone());
+
+            Log.d("DEBUG", "Drawer header setup complete");
+        } catch (Exception e) {
+            Log.e("DEBUG", "Drawer header setup failed: " + e.getMessage());
+        }
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment);
+        if (navHostFragment != null) {
+            NavController navController = navHostFragment.getNavController();
+            return NavigationUI.navigateUp(navController, appBarConfiguration)
+                    || super.onSupportNavigateUp();
+        }
+        return super.onSupportNavigateUp();
     }
 
     private void logout() {
