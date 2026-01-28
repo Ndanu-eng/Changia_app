@@ -1,20 +1,20 @@
 package com.changia.changia_app;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import androidx.lifecycle.LiveData;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private TextView tvUserName, tvUserPhone, tvUserEmail;
-    private CardView cvPersonalInfo, cvSecurity, cvNotifications, cvHelp;
-    private Button btnLogout;
     private SessionManager sessionManager;
+    private AppDatabase appDatabase;
+
+    private ImageView ivBack;
+    private TextView tvUserName, tvUserPhone, tvUserEmail, tvAccountType, tvMemberSince;
+    private Button btnLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,67 +22,69 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         sessionManager = new SessionManager(this);
+        appDatabase = AppDatabase.getDatabase(this);
+
+        if (!sessionManager.isLoggedIn()) {
+            sessionManager.logoutUser();
+            return;
+        }
 
         initializeViews();
-        loadUserData();
+        observeUserData();
         setupListeners();
     }
 
     private void initializeViews() {
+        ivBack = findViewById(R.id.iv_back);
         tvUserName = findViewById(R.id.tv_user_name);
         tvUserPhone = findViewById(R.id.tv_user_phone);
         tvUserEmail = findViewById(R.id.tv_user_email);
-
-        cvPersonalInfo = findViewById(R.id.cv_personal_info);
-        cvSecurity = findViewById(R.id.cv_security);
-        cvNotifications = findViewById(R.id.cv_notifications);
-        cvHelp = findViewById(R.id.cv_help);
-
+        tvAccountType = findViewById(R.id.tv_account_type);
+        tvMemberSince = findViewById(R.id.tv_member_since);
         btnLogout = findViewById(R.id.btn_logout);
+
+        // 🎨 Show if admin
+        if (sessionManager.isAdmin()) {
+            tvAccountType.setText("👑 Admin Account");
+            tvAccountType.setTextColor(getColor(R.color.primary_color));
+        } else {
+            tvAccountType.setText("👤 Regular Member");
+            tvAccountType.setTextColor(getColor(R.color.text_secondary));
+        }
     }
 
-    private void loadUserData() {
-        tvUserName.setText(sessionManager.getUserName());
-        tvUserPhone.setText(sessionManager.getUserPhone());
-        tvUserEmail.setText(sessionManager.getUserEmail());
+    private void observeUserData() {
+        int userId = sessionManager.getUserId();
+        if (userId == -1) {
+            tvUserName.setText("Error");
+            tvUserPhone.setText("Could not load user data");
+            tvUserEmail.setText("");
+            return;
+        }
+
+        LiveData<UserEntity> userLiveData = appDatabase.userDao().getUserByIdLive(userId);
+
+        userLiveData.observe(this, userEntity -> {
+            if (userEntity != null) {
+                String name = userEntity.getFullName();
+                String phone = userEntity.getPhoneNumber();
+                String email = userEntity.getEmail();
+
+                tvUserName.setText(name != null && !name.isEmpty() ? name : "User");
+                tvUserPhone.setText(phone != null && !phone.isEmpty() ? phone : "No phone number");
+                tvUserEmail.setText(email);
+
+                // 🎨 Show member since date
+                long createdAt = userEntity.getCreatedAt();
+                String memberSince = new java.text.SimpleDateFormat("MMMM yyyy", java.util.Locale.getDefault())
+                        .format(new java.util.Date(createdAt));
+                tvMemberSince.setText("Member since: " + memberSince);
+            }
+        });
     }
 
     private void setupListeners() {
-        cvPersonalInfo.setOnClickListener(v -> showComingSoonDialog("Personal Information"));
-
-        cvSecurity.setOnClickListener(v -> {
-            showComingSoonDialog("Security & PIN Settings");
-        });
-
-        cvNotifications.setOnClickListener(v -> {
-            showComingSoonDialog("Notification Preferences");
-        });
-
-        cvHelp.setOnClickListener(v -> {
-            showComingSoonDialog("Help & Support");
-        });
-
-        btnLogout.setOnClickListener(v -> {
-            new MaterialAlertDialogBuilder(this)
-                    .setTitle("Logout")
-                    .setMessage("Are you sure you want to logout?")
-                    .setPositiveButton("Logout", (dialog, which) -> {
-                        sessionManager.logout();
-                        Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        finish();
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .show();
-        });
-    }
-
-    private void showComingSoonDialog(String feature) {
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(feature)
-                .setMessage("This feature is coming soon!")
-                .setPositiveButton("OK", null)
-                .show();
+        ivBack.setOnClickListener(v -> finish());
+        btnLogout.setOnClickListener(v -> sessionManager.logoutUser());
     }
 }

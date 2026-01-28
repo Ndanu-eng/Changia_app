@@ -1,3 +1,4 @@
+
 [versions]
 agp = "8.13.2"
 junit = "4.13.2"
@@ -8,6 +9,8 @@ material = "1.13.0"
 activity = "1.12.2"
 constraintlayout = "2.2.1"
 navigation = "2.7.7"
+room = "2.6.1"
+scenecore = "1.0.0-alpha10"  # <-- ADD THIS LINE
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -18,12 +21,17 @@ material = { group = "com.google.android.material", name = "material", version.r
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
-# ADD THESE NAVIGATION LIBRARIES
+# Navigation libraries
 navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "navigation" }
 navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "navigation" }
+
+# --- ADD THESE ROOM LIBRARIES ---
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+scenecore = { group = "androidx.xr.scenecore", name = "scenecore", version.ref = "scenecore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 
-# ADD NAVIGATION SAFEARGS PLUGIN
+# Navigation safeargs plugin
 navigation-safeargs = { id = "androidx.navigation.safeargs", version.ref = "navigation" }

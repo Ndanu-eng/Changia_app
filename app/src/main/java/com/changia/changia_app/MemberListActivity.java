@@ -14,11 +14,14 @@ public class MemberListActivity extends AppCompatActivity {
     private RecyclerView rvMembers;
     private MemberAdapter memberAdapter;
     private TextView tvMemberCount;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member_list);
+
+        sessionManager = new SessionManager(this);
 
         ImageView ivBack = findViewById(R.id.iv_back);
         tvMemberCount = findViewById(R.id.tv_member_count);
@@ -38,11 +41,21 @@ public class MemberListActivity extends AppCompatActivity {
 
     private void loadMembers() {
         List<Member> memberList = new ArrayList<>();
-        memberList.add(new Member("Betina Onyango", "+254 712 345 678", true, true)); // Admin, paid
-        memberList.add(new Member("Spencer Ngari", "+254 723 456 789", false, true));
-        memberList.add(new Member("Lorna Ndanu", "+254 734 567 890", false, false)); // Not paid
-        memberList.add(new Member("John Doe", "+254 745 678 901", false, true));
-        memberList.add(new Member("Jane Smith", "+254 756 789 012", false, true));
+
+        if (sessionManager.isAdmin()) {
+            // Admin sees mock members
+            memberList.add(new Member("Betina Onyango", "+254 712 345 678", true, true)); // Admin, paid
+            memberList.add(new Member("Spencer Ngari", "+254 723 456 789", false, true));
+            memberList.add(new Member("Lorna Ndanu", "+254 734 567 890", false, false)); // Not paid
+            memberList.add(new Member("John Doe", "+254 745 678 901", false, true));
+            memberList.add(new Member("Jane Smith", "+254 756 789 012", false, true));
+        } else {
+            // Regular users see empty or just themselves
+            // You can choose to show nothing, or show just the current user
+            String userName = sessionManager.getUserName();
+            String userEmail = sessionManager.getUserEmail();
+            memberList.add(new Member(userName, userEmail, false, false));
+        }
 
         memberAdapter.setMemberList(memberList);
         tvMemberCount.setText(getString(R.string.member_count, memberList.size()));

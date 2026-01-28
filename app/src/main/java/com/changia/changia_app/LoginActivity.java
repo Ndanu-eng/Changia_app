@@ -2,103 +2,119 @@ package com.changia.changia_app;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.Log;
+import android.util.Patterns;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText etPhoneNumber;
-    private EditText etPin;
-    private Button btnLogin;
-    private TextView tvRegister;
-    private TextView tvForgotPin;
+    private static final String TAG = "LoginActivity";
+
+    // UI Components
+    private EditText emailEditText, passwordEditText;
+    private Button loginButton;
+    private TextView signUpTextView;
+
+    private AppDatabase appDatabase;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        appDatabase = AppDatabase.getDatabase(getApplicationContext());
+        sessionManager = new SessionManager(this);
+
+        // Check if the user is already logged in with a valid session
+        if (sessionManager.isLoggedIn() && sessionManager.getUserId() != -1) {
+            Log.d(TAG, "User is already logged in with a valid session. Navigating to MainActivity.");
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+            return; // Stop further execution of onCreate
+        } else {
+            // If the session is invalid (e.g., logged in but no ID), clear it for safety.
+            if (sessionManager.isLoggedIn()) {
+                Log.w(TAG, "User was logged in but session data is invalid. Clearing session.");
+                // Note: logoutUser() in this context will clear SharedPreferences but not navigate yet,
+                // which is correct behavior here.
+                sessionManager.logoutUser();
+            }
+        }
+
         initializeViews();
         setupListeners();
     }
 
     private void initializeViews() {
-        etPhoneNumber = findViewById(R.id.et_phone_number);
-        etPin = findViewById(R.id.et_pin);
-        btnLogin = findViewById(R.id.btn_login);
-        tvRegister = findViewById(R.id.tv_register);
-        tvForgotPin = findViewById(R.id.tv_forgot_pin);
+        emailEditText = findViewById(R.id.emailEditText);
+        passwordEditText = findViewById(R.id.passwordEditText);
+        loginButton = findViewById(R.id.loginButton);
+        signUpTextView = findViewById(R.id.signUpTextView);
     }
 
     private void setupListeners() {
-        // Phone number formatting (Kenyan format)
-        etPhoneNumber.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        loginButton.setOnClickListener(v -> validateAndLogin());
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        signUpTextView.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+            startActivity(intent);
+        });
+    }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                String phone = s.toString().trim();
-                if (!phone.startsWith("+254") && phone.length() > 0) {
-                    if (phone.startsWith("07") || phone.startsWith("01")) {
-                        phone = "+254" + phone.substring(1);
-                        etPhoneNumber.removeTextChangedListener(this);
-                        etPhoneNumber.setText(phone);
-                        etPhoneNumber.setSelection(phone.length());
-                        etPhoneNumber.addTextChangedListener(this);
-                    }
+    private void validateAndLogin() {
+        String email = emailEditText.getText().toString().trim();
+        String password = passwordEditText.getText().toString().trim();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailEditText.setError("Please enter a valid email address");
+            emailEditText.requestFocus();
+            return;
+        }
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            UserEntity user = appDatabase.userDao().login(email, password);
+            runOnUiThread(() -> {
+                if (user != null) {
+                    handleSuccessfulLogin(user);
+                } else {
+                    Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
-
-        btnLogin.setOnClickListener(v -> attemptLogin());
-
-        tvRegister.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, RegistrationActivity.class)));
-
-        tvForgotPin.setOnClickListener(v -> {
-            // Implement forgot PIN flow
-            Toast.makeText(this, "Reset PIN functionality coming soon", Toast.LENGTH_SHORT).show();
+            });
         });
     }
 
-    private void attemptLogin() {
-        String phone = etPhoneNumber.getText().toString().trim();
-        String pin = etPin.getText().toString().trim();
+    private void handleSuccessfulLogin(UserEntity user) {
+        // --- THIS IS THE FIX ---
+        // The createLoginSession method now handles EVERYTHING, including the admin status.
+        // By calling only this method, we ensure all data is saved in one atomic operation.
+        sessionManager.createLoginSession(user);
 
-        if (validateInputs(phone, pin)) {
-            // For now, simulate login - replace with actual Firebase Auth
-            if (pin.equals("1234")) { // Temporary test PIN
-                SessionManager session = new SessionManager(this);
-                session.createLoginSession("user_001", phone, "Demo User", "demo@changia.com");
+        // REMOVED: sessionManager.setAdmin(user.isAdmin()); // This line was causing the bug.
 
-                Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                finish();
-            } else {
-                Toast.makeText(this, "Invalid PIN", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private boolean validateInputs(String phone, String pin) {
-        if (phone.isEmpty() || phone.length() < 12) {
-            etPhoneNumber.setError("Enter a valid Kenyan phone number");
-            return false;
+        if (user.isAdmin()) {
+            Toast.makeText(this, "Welcome Admin!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
         }
 
-        if (pin.isEmpty() || pin.length() != 4) {
-            etPin.setError("PIN must be 4 digits");
-            return false;
-        }
-
-        return true;
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

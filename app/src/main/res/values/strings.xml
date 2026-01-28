@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">Changia</string>
     <string name="app_tagline">Secure group savings made simple</string>
+    <string name="back_button_description">Navigate to the previous screen</string>
+
 
 
     <!-- Login Screen -->

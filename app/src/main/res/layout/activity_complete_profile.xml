@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5">
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Top Section with Icon and Title -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="40dp">
+
+                <!-- Large Icon -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    app:cardElevation="4dp"
+                    app:cardCornerRadius="40dp"
+                    app:cardBackgroundColor="#1976D2"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="👤"
+                        android:textSize="40sp"
+                        android:gravity="center"/>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Complete Your Profile"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:textColor="#212121"
+                    android:layout_marginBottom="8dp"/>
+
+                <!-- Subtitle -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Just one more step to get started!"
+                    android:textSize="15sp"
+                    android:textColor="#757575"
+                    android:textAlignment="center"/>
+            </LinearLayout>
+
+            <!-- Info Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="12dp"
+                android:layout_marginBottom="24dp"
+                app:cardBackgroundColor="#E3F2FD">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ℹ️"
+                        android:textSize="24sp"
+                        android:layout_marginEnd="12dp"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="This information helps us personalize your Changia experience and enable seamless payments"
+                        android:textSize="13sp"
+                        android:textColor="#1565C0"
+                        android:lineSpacingExtra="2dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Form Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="3dp"
+                app:cardCornerRadius="16dp"
+                android:layout_marginBottom="24dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <!-- Full Name Section -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Personal Information"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#424242"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- Full Name Field -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_full_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Full Name"
+                        android:layout_marginBottom="8dp"
+                        app:startIconDrawable="@android:drawable/ic_menu_myplaces"
+                        app:startIconTint="#1976D2"
+                        app:helperText="Enter your full name as it appears on your ID"
+                        app:helperTextTextColor="#757575"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_full_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPersonName|textCapWords"
+                            android:imeOptions="actionNext"
+                            android:textSize="16sp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E0E0E0"
+                        android:layout_marginVertical="16dp"/>
+
+                    <!-- Payment Information Section -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Payment Information"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#424242"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- Phone Number Field -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_phone_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="M-Pesa Phone Number"
+                        app:startIconDrawable="@android:drawable/stat_notify_call_mute"
+                        app:startIconTint="#4CAF50"
+                        app:prefixText="+254 "
+                        app:helperText="Format: 0712345678 (Safaricom, Airtel, or Telkom)"
+                        app:helperTextTextColor="#757575"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_phone_number"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="phone"
+                            android:imeOptions="actionDone"
+                            android:maxLength="10"
+                            android:textSize="16sp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Phone Number Info -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="8dp"
+                        android:padding="12dp"
+                        android:background="#FFF9C4"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="💡"
+                            android:textSize="18sp"
+                            android:layout_marginEnd="8dp"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="This will be your default payment number for M-Pesa transactions"
+                            android:textSize="12sp"
+                            android:textColor="#F57F17"
+                            android:lineSpacingExtra="2dp"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Privacy Note -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="16dp"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🔒"
+                    android:textSize="16sp"
+                    android:layout_marginEnd="8dp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Your information is secure and will never be shared with third parties"
+                    android:textSize="11sp"
+                    android:textColor="#9E9E9E"
+                    android:textAlignment="center"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Fixed Button at Bottom (Always Visible) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="#FFFFFF"
+        android:elevation="8dp">
+
+        <!-- Continue Button -->
+        <Button
+            android:id="@+id/btn_save_profile"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Continue to Dashboard"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:backgroundTint="#1976D2"
+            android:textColor="#FFFFFF"
+            app:cornerRadius="12dp"/>
+
+        <!-- Skip Option -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Complete this later from Profile settings"
+            android:textSize="12sp"
+            android:textColor="#9E9E9E"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:textAlignment="center"/>
+
+    </LinearLayout>
+
+</LinearLayout>

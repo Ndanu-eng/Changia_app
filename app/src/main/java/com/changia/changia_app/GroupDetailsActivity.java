@@ -21,12 +21,15 @@ public class GroupDetailsActivity extends AppCompatActivity {
     private ImageView ivBack;
     private RecyclerView rvRecentActivity;
     private ActivityAdapter activityAdapter;
-    private boolean isLocked = false; // Track lock status
+    private boolean isLocked = false;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_details);
+
+        sessionManager = new SessionManager(this);
 
         initializeViews();
         loadGroupData();
@@ -60,7 +63,12 @@ public class GroupDetailsActivity extends AppCompatActivity {
         }
 
         tvGroupBalance.setText(String.format("KES %,.0f", groupBalance));
-        tvMemberCount.setText("12 members");
+
+        if (sessionManager.isAdmin()) {
+            tvMemberCount.setText("12 members");
+        } else {
+            tvMemberCount.setText("1 member"); // Just the user
+        }
 
         // Set progress
         progressBar.setProgress(progress);
@@ -82,10 +90,17 @@ public class GroupDetailsActivity extends AppCompatActivity {
 
     private void setupRecentActivity() {
         List<ActivityItem> activityList = new ArrayList<>();
-        activityList.add(new ActivityItem("Spencer contributed KES 5,000", "2 hours ago"));
-        activityList.add(new ActivityItem("Betina locked funds", "1 day ago"));
-        activityList.add(new ActivityItem("Lorna joined the group", "3 days ago"));
-        activityList.add(new ActivityItem("Monthly payout to John", "1 week ago"));
+
+        if (sessionManager.isAdmin()) {
+            // Admin sees mock activity
+            activityList.add(new ActivityItem("Spencer contributed KES 5,000", "2 hours ago"));
+            activityList.add(new ActivityItem("Betina locked funds", "1 day ago"));
+            activityList.add(new ActivityItem("Lorna joined the group", "3 days ago"));
+            activityList.add(new ActivityItem("Monthly payout to John", "1 week ago"));
+        } else {
+            // Regular users see no activity or just their own
+            activityList.add(new ActivityItem("You created this group", "Just now"));
+        }
 
         activityAdapter = new ActivityAdapter(activityList);
         rvRecentActivity.setLayoutManager(new LinearLayoutManager(this));

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,16 +18,20 @@ public class ChamaFragment extends Fragment {
     private RecyclerView rvRotationSchedule, rvPayoutHistory;
     private RotationAdapter rotationAdapter;
     private PayoutHistoryAdapter historyAdapter;
+    private SessionManager sessionManager;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chama, container, false);
 
+        sessionManager = new SessionManager(requireContext());
         initializeViews(view);
-        loadChamaData();
-        setupRotationSchedule();
-        setupPayoutHistory();
+
+        if (sessionManager.isAdmin()) {
+            loadAdminMockData();
+        } else {
+            loadEmptyState();
+        }
 
         return view;
     }
@@ -39,35 +44,38 @@ public class ChamaFragment extends Fragment {
         rvPayoutHistory = view.findViewById(R.id.rv_payout_history);
     }
 
-    private void loadChamaData() {
-        // Sample data - replace with API
-        tvCurrentMember.setText("Current: Spencer Ngari");
-        tvNextPayoutDate.setText("Next Payout: Oct 15, 2024");
+    private void loadAdminMockData() {
+        // Card Data
+        tvCurrentMember.setText("Spencer Ngari");
+        tvNextPayoutDate.setText("Next Payout: Feb 15, 2026");
         tvPayoutAmount.setText("KES 60,000");
-    }
 
-    private void setupRotationSchedule() {
+        // Rotation Schedule
         List<RotationItem> rotationList = new ArrayList<>();
-        rotationList.add(new RotationItem("Sep 2024", "Betina Onyango", "KES 60,000", true));
-        rotationList.add(new RotationItem("Oct 2024", "Spencer Ngari", "KES 60,000", false));
-        rotationList.add(new RotationItem("Nov 2024", "Lorna Ndanu", "KES 60,000", false));
-        rotationList.add(new RotationItem("Dec 2024", "John Doe", "KES 60,000", false));
-        rotationList.add(new RotationItem("Jan 2025", "Jane Smith", "KES 60,000", false));
+        rotationList.add(new RotationItem("Jan 2026", "Betina Onyango", "KES 60,000", true));
+        rotationList.add(new RotationItem("Feb 2026", "Spencer Ngari", "KES 60,000", false));
+        rotationList.add(new RotationItem("Mar 2026", "Lorna Ndanu", "KES 60,000", false));
 
         rotationAdapter = new RotationAdapter(rotationList);
         rvRotationSchedule.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvRotationSchedule.setAdapter(rotationAdapter);
-    }
 
-    private void setupPayoutHistory() {
+        // Payout History
         List<PayoutHistory> historyList = new ArrayList<>();
-        historyList.add(new PayoutHistory("Aug 2024", "Jane Smith", "KES 60,000", true));
-        historyList.add(new PayoutHistory("Jul 2024", "John Doe", "KES 60,000", true));
-        historyList.add(new PayoutHistory("Jun 2024", "Lorna Ndanu", "KES 60,000", true));
-        historyList.add(new PayoutHistory("May 2024", "Spencer Ngari", "KES 60,000", true));
+        historyList.add(new PayoutHistory("Dec 2025", "Jane Smith", "KES 60,000", true));
+        historyList.add(new PayoutHistory("Nov 2025", "John Doe", "KES 60,000", true));
 
         historyAdapter = new PayoutHistoryAdapter(historyList);
         rvPayoutHistory.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvPayoutHistory.setAdapter(historyAdapter);
+    }
+
+    private void loadEmptyState() {
+        tvCurrentMember.setText("No Active Rotation");
+        tvNextPayoutDate.setText("Join a group to see schedules");
+        tvPayoutAmount.setText("KES 0");
+
+        rvRotationSchedule.setVisibility(View.GONE);
+        rvPayoutHistory.setVisibility(View.GONE);
     }
 }
