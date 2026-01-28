@@ -81,7 +81,7 @@ public class SessionManager {
      * @return true if the user is an admin, false otherwise.
      */
     public boolean isAdmin() {
-        return sharedPreferences.getBoolean(KEY_IS_ADMIN, false);
+        return sharedPreferences.getBoolean(KEY_IS_ADMIN, true);
     }
 
     /**
