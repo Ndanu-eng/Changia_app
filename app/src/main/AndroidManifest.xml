@@ -31,14 +31,16 @@
         <!-- LOGIN ACTIVITY -->
         <activity
             android:name=".LoginActivity"
-            android:exported="true"
-            android:windowSoftInputMode="stateVisible|adjustResize" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
-        <!-- REGISTRATION ACTIVITY -->
         <activity
-            android:name=".RegistrationActivity"
-            android:exported="true"
-            android:windowSoftInputMode="stateVisible|adjustResize" />
+            android:name=".SignUpActivity"
+            android:exported="false" />
 
         <!-- MAIN ACTIVITY (Dashboard with Navigation) -->
         <activity

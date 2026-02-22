@@ -1,12 +1,13 @@
 package com.changia.changia_app;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,78 +17,58 @@ import java.util.List;
 public class GroupsFragment extends Fragment {
 
     private RecyclerView rvGroups;
-    private Button btnCreateGroup;
     private TextView tvNoGroups;
+    private Button btnCreateGroup;
     private GroupAdapter groupAdapter;
     private List<Group> groupList;
+    private SessionManager session;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_groups, container, false);
 
-        initializeViews(view);
+        session = new SessionManager(requireContext());
+
+        // Initialize Views
+        rvGroups = view.findViewById(R.id.rv_groups);
+        tvNoGroups = view.findViewById(R.id.tv_no_groups);
+        btnCreateGroup = view.findViewById(R.id.btn_create_group);
+
         setupRecyclerView();
         loadGroups();
-        setupListeners();
 
         return view;
-    }
-
-    private void initializeViews(View view) {
-        rvGroups = view.findViewById(R.id.rv_groups);
-        btnCreateGroup = view.findViewById(R.id.btn_create_group);
-        tvNoGroups = view.findViewById(R.id.tv_no_groups);
     }
 
     private void setupRecyclerView() {
         groupList = new ArrayList<>();
         groupAdapter = new GroupAdapter(groupList, requireContext());
-
         rvGroups.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvGroups.setAdapter(groupAdapter);
-
-        // Set click listener for groups
-        groupAdapter.setOnItemClickListener(new GroupAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                Group group = groupList.get(position);
-                Intent intent = new Intent(requireContext(), GroupDetailsActivity.class);
-                intent.putExtra("group_id", group.getName()); // Pass group ID
-                startActivity(intent);
-            }
-        });
     }
 
     private void loadGroups() {
-        // Sample data - replace with API call
-        int oldSize = groupList.size();
         groupList.clear();
 
-        if (oldSize > 0) {
-            groupAdapter.notifyItemRangeRemoved(0, oldSize);
-        }
-
-        groupList.add(new Group("Wedding Fund", 6, 10, 540000, 750000, true));
-        groupList.add(new Group("Business Chama", 8, 12, 320000, 500000, false));
-        groupList.add(new Group("School Fees", 3, 5, 150000, 200000, true));
-        groupList.add(new Group("Car Fund", 4, 8, 200000, 400000, false));
-
-        groupAdapter.notifyItemRangeInserted(0, groupList.size());
-
-        // Show/hide empty state
-        if (groupList.isEmpty()) {
-            tvNoGroups.setVisibility(View.VISIBLE);
-            rvGroups.setVisibility(View.GONE);
-        } else {
-            tvNoGroups.setVisibility(View.GONE);
+        if (session.isAdmin()) {
+            // --- ADMIN: LOAD 8 UNIQUE MOCK GROUPS ---
             rvGroups.setVisibility(View.VISIBLE);
-        }
-    }
+            tvNoGroups.setVisibility(View.GONE);
 
-    private void setupListeners() {
-        btnCreateGroup.setOnClickListener(v ->
-                startActivity(new Intent(requireContext(), CreateGroupActivity.class))
-        );
+            groupList.add(new Group("💒 Nairobi Wedding Fund", 8, 10, 675000, 1000000, true));
+            groupList.add(new Group("🚀 Tech Startup Investment", 12, 15, 1850000, 3000000, false));
+            groupList.add(new Group("🏥 Emergency Medical Fund", 5, 8, 285000, 500000, true));
+            groupList.add(new Group("📚 School Fees 2026", 6, 6, 480000, 600000, false));
+            groupList.add(new Group("🏞️ Land Purchase - Kiambu", 10, 20, 3200000, 5000000, false));
+            groupList.add(new Group("✈️ Vacation - Dubai", 4, 8, 125000, 400000, false));
+            groupList.add(new Group("🏪 Small Business Capital", 7, 10, 560000, 800000, true));
+            groupList.add(new Group("🚗 Car Purchase Fund", 9, 12, 850000, 1500000, false));
+        } else {
+            // --- NEW USER: BLANK STATE ---
+            rvGroups.setVisibility(View.GONE);
+            tvNoGroups.setVisibility(View.VISIBLE);
+        }
+
+        groupAdapter.notifyDataSetChanged();
     }
 }

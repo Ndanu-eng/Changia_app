@@ -6,7 +6,6 @@
     android:orientation="vertical"
     android:background="@color/background">
 
-    <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,25 +32,29 @@
 
     </LinearLayout>
 
-    <!-- Empty State -->
-    <TextView
-        android:id="@+id/tv_no_groups"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="48dp"
-        android:text="No groups yet\nCreate or join a group to get started"
-        android:textColor="@color/text_secondary"
-        android:textSize="16sp"
-        android:gravity="center"
-        android:visibility="gone" />
-
-    <!-- Groups List -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_groups"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp"
-        android:visibility="visible" />
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_no_groups"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="No groups yet\nCreate or join a group to get started 🚀"
+            android:textColor="@color/text_secondary"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_groups"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:clipToPadding="false"
+            android:visibility="visible" />
+
+    </FrameLayout>
 
 </LinearLayout>

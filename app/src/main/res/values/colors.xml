@@ -9,9 +9,13 @@
     <color name="secondary_color">#8C54FF</color>
 
     <!-- Status Colors -->
+    <color name="black">#FF000000</color>
     <color name="success">#00C48C</color>
     <color name="warning">#FFA26B</color>
     <color name="error">#FF647C</color>
+    <color name="green">#4CAF50</color>
+    <color name="red">#F44336</color>
+
 
     <!-- Neutral Colors -->
     <color name="white">#FFFFFF</color>
@@ -23,4 +27,5 @@
     <color name="text_primary">#2E384D</color>
     <color name="text_secondary">#8798AD</color>
     <color name="text_disabled">#B0BAC9</color>
+
 </resources>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@color/background">
+    android:background="#F5F5F5">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,7 +12,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Current Payout Card -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,7 +28,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Current Rotation"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="#757575"
                     android:textSize="14sp" />
 
                 <TextView
@@ -37,8 +36,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Spencer Ngari"
-                    android:textColor="@color/text_primary"
+                    android:text="No Active Rotation"
+                    android:textColor="#212121"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
@@ -47,8 +46,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Next Payout: Oct 15, 2024"
-                    android:textColor="@color/text_secondary"
+                    android:text="Next Payout: N/A"
+                    android:textColor="#757575"
                     android:textSize="14sp" />
 
                 <TextView
@@ -56,21 +55,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="KES 60,000"
-                    android:textColor="@color/primary_color"
+                    android:text="KES 0"
+                    android:textColor="#2E7D32"
                     android:textSize="28sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Rotation Schedule -->
         <TextView
+            android:id="@+id/tv_label_rotation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:text="Rotation Schedule"
-            android:textColor="@color/text_primary"
+            android:textColor="#212121"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -78,15 +77,16 @@
             android:id="@+id/rv_rotation_schedule"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:nestedScrollingEnabled="false" />
 
-        <!-- Payout History -->
         <TextView
+            android:id="@+id/tv_label_history"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:text="Payout History"
-            android:textColor="@color/text_primary"
+            android:textColor="#212121"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -94,8 +94,8 @@
             android:id="@+id/rv_payout_history"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:nestedScrollingEnabled="false" />
 
     </LinearLayout>
-
-</ScrollView>
+</androidx.core.widget.NestedScrollView>
