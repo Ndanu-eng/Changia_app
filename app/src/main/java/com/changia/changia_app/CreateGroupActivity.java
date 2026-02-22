@@ -1,7 +1,7 @@
-
 package com.changia.changia_app;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -9,103 +9,117 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.material.textfield.TextInputLayout;
 
 public class CreateGroupActivity extends AppCompatActivity {
 
-    private EditText etGroupName, etGroupGoal, etMemberCount, etContributionAmount;
+    private EditText etGroupName;
+    private EditText etGroupGoal;  // Changed from et_target_amount
+    private EditText etMemberCount;
+    private EditText etContributionAmount;  // Changed from et_monthly_contribution
     private RadioGroup rgContributionFrequency;
     private RadioButton rbWeekly, rbMonthly;
-    private Button btnCreateGroup;
+    private Button btnCreateGroup;  // Changed from btn_create
     private ImageView ivBack;
 
-    private TextInputLayout tilGroupName, tilGroupGoal, tilMemberCount, tilContributionAmount;
+    private SessionManager sessionManager;
+    private GroupRepository groupRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
 
-        initializeViews();
-        setupListeners();
-    }
+        sessionManager = new SessionManager(this);
+        groupRepository = new GroupRepository(getApplication());
 
-    private void initializeViews() {
+        // Initialize views with CORRECT IDs from your layout
+        ivBack = findViewById(R.id.iv_back);
         etGroupName = findViewById(R.id.et_group_name);
-        etGroupGoal = findViewById(R.id.et_group_goal);
-        etMemberCount = findViewById(R.id.et_member_count);
-        etContributionAmount = findViewById(R.id.et_contribution_amount);
-
+        etGroupGoal = findViewById(R.id.et_group_goal);  // CORRECT ID
+        etMemberCount = findViewById(R.id.et_member_count);  // CORRECT ID
+        etContributionAmount = findViewById(R.id.et_contribution_amount);  // CORRECT ID
         rgContributionFrequency = findViewById(R.id.rg_contribution_frequency);
         rbWeekly = findViewById(R.id.rb_weekly);
         rbMonthly = findViewById(R.id.rb_monthly);
+        btnCreateGroup = findViewById(R.id.btn_create_group);  // CORRECT ID
 
-        btnCreateGroup = findViewById(R.id.btn_create_group);
-        ivBack = findViewById(R.id.iv_back);
+        // Set default to monthly
+        rbMonthly.setChecked(true);
 
-        tilGroupName = findViewById(R.id.til_group_name);
-        tilGroupGoal = findViewById(R.id.til_group_goal);
-        tilMemberCount = findViewById(R.id.til_member_count);
-        tilContributionAmount = findViewById(R.id.til_contribution_amount);
-    }
+        // Back button click
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
-    private void setupListeners() {
-        ivBack.setOnClickListener(v -> finish());
-
-        btnCreateGroup.setOnClickListener(v -> {
-            if (validateInputs()) {
+        btnCreateGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 createGroup();
             }
         });
     }
 
-    /**
-     * THIS METHOD IS NOW FIXED.
-     * The logic is restructured to prevent the infinite layout loop that causes the app to hang.
-     */
-    private boolean validateInputs() {
-        // Step 1: Clear all previous errors at the beginning.
-        // This is the key to breaking the infinite loop.
-        tilGroupName.setError(null);
-        tilGroupGoal.setError(null);
-        tilMemberCount.setError(null);
-        tilContributionAmount.setError(null);
-
-        boolean isValid = true;
-
-        // Step 2: Validate each field and set errors if necessary.
-        if (etGroupName.getText().toString().trim().isEmpty()) {
-            tilGroupName.setError("Group name is required");
-            isValid = false;
-        }
-
-        if (etGroupGoal.getText().toString().trim().isEmpty()) {
-            tilGroupGoal.setError("Group goal is required");
-            isValid = false;
-        }
-
-        if (etMemberCount.getText().toString().trim().isEmpty()) {
-            tilMemberCount.setError("Member count is required");
-            isValid = false;
-        }
-
-        if (etContributionAmount.getText().toString().trim().isEmpty()) {
-            tilContributionAmount.setError("Contribution amount is required");
-            isValid = false;
-        }
-
-        // Only after all checks are done, return the final result.
-        return isValid;
-    }
-
     private void createGroup() {
-        String groupName = etGroupName.getText().toString().trim();
-        // In a real app, you would parse the other values, but for this simulation,
-        // just showing the toast is fine.
+        String name = etGroupName.getText().toString().trim();
+        String goalStr = etGroupGoal.getText().toString().trim();
+        String membersStr = etMemberCount.getText().toString().trim();
+        String contributionStr = etContributionAmount.getText().toString().trim();
 
-        Toast.makeText(this, "Group '" + groupName + "' created successfully!", Toast.LENGTH_LONG).show();
+        // Validate inputs
+        if (name.isEmpty()) {
+            etGroupName.setError("Group name is required");
+            etGroupName.requestFocus();
+            return;
+        }
 
-        // Navigate back to the previous screen
-        finish();
+        if (goalStr.isEmpty()) {
+            etGroupGoal.setError("Target amount is required");
+            etGroupGoal.requestFocus();
+            return;
+        }
+
+        if (membersStr.isEmpty()) {
+            etMemberCount.setError("Number of members is required");
+            etMemberCount.requestFocus();
+            return;
+        }
+
+        double targetAmount = Double.parseDouble(goalStr);
+        int memberCount = Integer.parseInt(membersStr);
+        double monthlyContribution = contributionStr.isEmpty() ? 0 : Double.parseDouble(contributionStr);
+
+        // Get selected frequency
+        String frequency = rbMonthly.isChecked() ? "Monthly" : "Weekly";
+
+        // Create GroupEntity
+        GroupEntity group = new GroupEntity();
+        group.setName(name);
+        group.setTargetAmount(targetAmount);
+        group.setTargetMemberCount(memberCount);
+        group.setCurrentMemberCount(1); // Creator is first member
+        group.setCurrentAmount(0);
+        group.setMonthlyContribution(monthlyContribution);
+        group.setContributionFrequency(frequency);
+        group.setCreatedBy(sessionManager.getUserId());
+        group.setCreatedAt(System.currentTimeMillis());
+        group.setLocked(false);
+
+        // Save to database
+        groupRepository.insert(group, new GroupRepository.OnGroupInsertedListener() {
+            @Override
+            public void onGroupInserted(long groupId) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(CreateGroupActivity.this,
+                                "Group created successfully!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
+            }
+        });
     }
 }

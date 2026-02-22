@@ -15,9 +15,8 @@
         android:theme="@style/Theme.Changia"
         tools:targetApi="31">
 
-        <!-- ===== PERSON 1: CORE + AUTH + DASHBOARD ===== -->
-
-        <!-- SPLASH ACTIVITY (FIRST SCREEN - LAUNCHER) -->
+        <!-- ===== LAUNCHER ACTIVITY (ONLY ONE) ===== -->
+        <!-- SPLASH ACTIVITY (LAUNCHER) - KEEP ONLY THIS ONE WITH LAUNCHER INTENT -->
         <activity
             android:name=".SplashActivity"
             android:exported="true"
@@ -28,68 +27,81 @@
             </intent-filter>
         </activity>
 
-        <!-- LOGIN ACTIVITY -->
+        <!-- ===== AUTH ACTIVITIES ===== -->
         <activity
             android:name=".LoginActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false" />  <!-- REMOVED LAUNCHER INTENT -->
 
         <activity
             android:name=".SignUpActivity"
             android:exported="false" />
 
-        <!-- MAIN ACTIVITY (Dashboard with Navigation) -->
+        <!-- ADD THIS - MISSING ACTIVITY -->
+        <activity
+            android:name=".CompleteProfileActivity"
+            android:exported="false" />
+
+        <!-- ===== MAIN ACTIVITY ===== -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:windowSoftInputMode="stateVisible|adjustResize" />
 
-        <!-- PROFILE ACTIVITY -->
+        <!-- ===== PROFILE ===== -->
         <activity
             android:name=".ProfileActivity"
             android:exported="true" />
 
-        <!-- ===== PERSON 2: GROUPS MODULE ===== -->
+        <!-- ===== WALLET MODULE (ADD THESE - MISSING) ===== -->
+        <activity
+            android:name=".AddMoneyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddMoneyActivity_RealMpesa"
+            android:exported="false" />
+        <activity
+            android:name=".SendMoneyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".WithdrawActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TransactionHistoryActivity"
+            android:exported="false" />
+        <!--<activity
+            android:name=".TransactionDetailsActivity"
+            android:exported="false" /> -->
 
-        <!-- CREATE GROUP ACTIVITY -->
+        <!-- ===== GROUPS MODULE ===== -->
         <activity
             android:name=".CreateGroupActivity"
             android:exported="false"
             android:windowSoftInputMode="stateVisible|adjustResize" />
-
-        <!-- GROUP DETAILS ACTIVITY -->
         <activity
             android:name=".GroupDetailsActivity"
             android:exported="false" />
-
-        <!-- MEMBER LIST ACTIVITY -->
         <activity
             android:name=".MemberListActivity"
             android:exported="false" />
 
-        <!-- ===== PERSON 2: CONTRIBUTIONS MODULE ===== -->
-
-        <!-- CONTRIBUTE ACTIVITY -->
+        <!-- ===== CONTRIBUTIONS MODULE ===== -->
         <activity
             android:name=".ContributeActivity"
             android:exported="false"
             android:windowSoftInputMode="stateVisible|adjustResize" />
 
-        <!-- ===== PERSON 2: CHAMA & LOCKING MODULE ===== -->
-
-        <!-- LOCK/UNLOCK REQUEST ACTIVITY (Handles both) -->
+        <!-- ===== LOCKING MODULE ===== -->
         <activity
             android:name=".LockRequestActivity"
             android:exported="false"
             android:windowSoftInputMode="stateVisible|adjustResize" />
-
-        <!-- VOTE ACTIVITY -->
         <activity
             android:name=".VoteActivity"
+            android:exported="false" />
+
+        <!-- ===== DASHBOARD ===== -->
+        <activity
+            android:name=".DashboardActivity"
             android:exported="false" />
 
     </application>

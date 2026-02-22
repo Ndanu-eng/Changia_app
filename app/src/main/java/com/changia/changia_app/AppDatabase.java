@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
                 ContributionEntity.class,
                 NotificationEntity.class
         },
-        version = 1,
+        version = 2,
         exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {

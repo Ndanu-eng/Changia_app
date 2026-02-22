@@ -3,11 +3,16 @@ package com.changia.changia_app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.LiveData; // Import LiveData
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
@@ -15,16 +20,19 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private AppBarConfiguration appBarConfiguration;
     private SessionManager sessionManager;
+    private NavigationView navigationView;
     private BottomNavigationView bottomNav;
-
-    // --- FIX: Add AppDatabase ---
     private AppDatabase appDatabase;
+    private TextView tvUserName, tvUserPhone;
+    private long backPressedTime;
+    private Toast backToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,29 +41,45 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("DEBUG", "=== MAIN ACTIVITY STARTED ===");
 
+        // Initialize session manager and database
         sessionManager = new SessionManager(this);
-        // --- FIX: Initialize the database ---
         appDatabase = AppDatabase.getDatabase(this);
+
+        // Check if user is logged in
+        if (!sessionManager.isLoggedIn()) {
+            // Redirect to login
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
 
         setupToolbar();
         setupNavigation();
-        // --- FIX: This method will now use LiveData ---
-        observeDrawerHeaderData();
+        setupDrawerHeader();
+
+        // Load user data for drawer header
+        loadUserData();
     }
 
     private void setupToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Changia");
+        }
+
         Log.d("DEBUG", "Toolbar setup complete");
     }
 
     private void setupNavigation() {
         drawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         bottomNav = findViewById(R.id.bottom_nav);
 
         Log.d("DEBUG", "Starting navigation setup");
 
+        // Get NavController from NavHostFragment
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
 
@@ -67,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = navHostFragment.getNavController();
         Log.d("DEBUG", "NavController obtained successfully");
 
+        // Configure top level destinations (matches your bottom nav items)
         appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.homeFragment,
                 R.id.groupsFragment,
@@ -75,71 +100,116 @@ public class MainActivity extends AppCompatActivity {
                 .setOpenableLayout(drawerLayout)
                 .build();
 
+        // Setup ActionBar with NavController
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
+
+        // Setup Bottom Navigation
         NavigationUI.setupWithNavController(bottomNav, navController);
 
-        navigationView.setNavigationItemSelectedListener(item -> {
-            int id = item.getItemId();
+        // Setup Navigation Drawer - THIS LINKS THE DRAWER MENU TO NAVIGATION
+        NavigationUI.setupWithNavController(navigationView, navController);
 
-            if (id == R.id.nav_profile) {
-                // In a real app, this might navigate to a profile fragment
-                // startActivity(new Intent(this, ProfileActivity.class));
-                drawerLayout.closeDrawers();
-                return true;
-            } else if (id == R.id.nav_logout) {
-                logout();
-                return true;
-            }
+        // Handle custom drawer items (profile, logout) that aren't in navigation graph
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
 
-            boolean handled = NavigationUI.onNavDestinationSelected(item, navController);
-            if (handled) {
-                drawerLayout.closeDrawers();
+                // Handle custom items
+                if (id == R.id.nav_profile) {
+                    // Navigate to Profile Activity
+                    Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                    startActivity(intent);
+                    drawerLayout.closeDrawers();
+                    return true;
+
+                } else if (id == R.id.nav_logout) {
+                    // Show logout confirmation
+                    showLogoutConfirmation();
+                    drawerLayout.closeDrawers();
+                    return true;
+                }
+
+                // For fragment destinations (homeFragment, groupsFragment, etc.),
+                // let NavigationUI handle them
+                boolean handled = NavigationUI.onNavDestinationSelected(item, navController);
+                if (handled) {
+                    drawerLayout.closeDrawers();
+                }
+                return handled;
             }
-            return handled;
         });
 
         Log.d("DEBUG", "=== NAVIGATION SETUP COMPLETE ===");
     }
 
-    /**
-     * --- THIS IS THE UPGRADED METHOD ---
-     * It observes the UserEntity from the database using LiveData.
-     * When the user's data changes, the drawer header will update automatically.
-     */
-    private void observeDrawerHeaderData() {
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        android.view.View headerView = navigationView.getHeaderView(0);
-        TextView tvUserName = headerView.findViewById(R.id.tv_user_name);
-        TextView tvUserPhone = headerView.findViewById(R.id.tv_user_phone);
+    private void setupDrawerHeader() {
+        // Get header view
+        View headerView = navigationView.getHeaderView(0);
 
+        tvUserName = headerView.findViewById(R.id.tv_user_name);
+        tvUserPhone = headerView.findViewById(R.id.tv_user_phone);
+
+        // Set default values while loading
+        tvUserName.setText("Loading...");
+        tvUserPhone.setText("Please wait");
+    }
+
+    private void loadUserData() {
         int userId = sessionManager.getUserId();
+
         if (userId == -1) {
-            Log.e("DEBUG", "Cannot observe user data: Invalid user ID.");
-            // Set fallback data
-            tvUserName.setText("Guest");
-            tvUserPhone.setText("Not logged in");
+            // Invalid user ID, logout
+            sessionManager.logoutUser();
             return;
         }
 
-        // Get the LiveData object for the current user
+        // Observe user data from database
         LiveData<UserEntity> userLiveData = appDatabase.userDao().getUserByIdLive(userId);
+        userLiveData.observe(this, new Observer<UserEntity>() {
+            @Override
+            public void onChanged(UserEntity user) {
+                if (user != null) {
+                    // Update drawer header with real user data
+                    tvUserName.setText(user.getFullName());
 
-        // Observe the LiveData for changes
-        userLiveData.observe(this, userEntity -> {
-            if (userEntity != null) {
-                Log.d("DEBUG", "Drawer header data updated for user: " + userEntity.getFullName());
-                tvUserName.setText(userEntity.getFullName());
+                    String phone = user.getPhoneNumber();
+                    if (phone != null && !phone.isEmpty()) {
+                        tvUserPhone.setText(phone);
+                    } else {
+                        tvUserPhone.setText(user.getEmail());
+                    }
 
-                String phone = userEntity.getPhoneNumber();
-                // Use phone number if available, otherwise fall back to email
-                if (phone != null && !phone.isEmpty()) {
-                    tvUserPhone.setText(phone);
-                } else {
-                    tvUserPhone.setText(userEntity.getEmail());
+                    Log.d("DEBUG", "Drawer header updated for user: " + user.getFullName());
                 }
             }
         });
+    }
+
+    private void showLogoutConfirmation() {
+        Snackbar.make(drawerLayout, "Logout from Changia?", Snackbar.LENGTH_LONG)
+                .setAction("LOGOUT", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        logout();
+                    }
+                })
+                .setActionTextColor(getResources().getColor(android.R.color.holo_red_dark))
+                .show();
+    }
+
+    private void logout() {
+        // Clear session
+        sessionManager.logoutUser();
+
+        // Show message
+        Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+
+        // Navigate to Login
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -149,18 +219,74 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    private void logout() {
-        sessionManager.logoutUser();
-        // The logoutUser method in SessionManager already handles navigation,
-        // but an explicit finish() here is a good safety measure.
-        finish();
+    @Override
+    public void onBackPressed() {
+        // Close drawer if open
+        if (drawerLayout.isDrawerOpen(navigationView)) {
+            drawerLayout.closeDrawers();
+            return;
+        }
+
+        // Double back to exit
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            if (backToast != null) {
+                backToast.cancel();
+            }
+            super.onBackPressed();
+            finishAffinity(); // Close all activities
+            return;
+        } else {
+            backToast = Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT);
+            backToast.show();
+        }
+        backPressedTime = System.currentTimeMillis();
     }
 
     /**
-     * Navigate to Groups tab programmatically
-     * Called from HomeFragment when "View All" is clicked
+     * Public method to navigate to groups tab from other fragments
      */
-    public void navigateToGroupsTab() {
-        bottomNav.setSelectedItemId(R.id.groupsFragment);
+    public void navigateToGroups() {
+        if (bottomNav != null) {
+            bottomNav.setSelectedItemId(R.id.groupsFragment);
+        }
+    }
+
+    /**
+     * Public method to navigate to wallet tab
+     */
+    public void navigateToWallet() {
+        if (bottomNav != null) {
+            bottomNav.setSelectedItemId(R.id.walletFragment);
+        }
+    }
+
+    /**
+     * Get current user ID
+     */
+    public int getCurrentUserId() {
+        return sessionManager.getUserId();
+    }
+
+    /**
+     * Check if current user is admin
+     */
+    public boolean isCurrentUserAdmin() {
+        return sessionManager.isAdmin();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh user data when returning to activity
+        loadUserData();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Cancel any pending toasts
+        if (backToast != null) {
+            backToast.cancel();
+        }
     }
 }

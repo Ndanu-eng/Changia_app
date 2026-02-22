@@ -1,11 +1,14 @@
 package com.changia.changia_app;
 
-import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import androidx.room.ColumnInfo;
 
-@Entity(tableName = "groups") // The table name itself is not the issue
+/**
+ * Group Entity for Room Database
+ * Represents a savings group/chama in the system
+ */
+@Entity(tableName = "groups")
 public class GroupEntity {
 
     @PrimaryKey(autoGenerate = true)
@@ -14,105 +17,200 @@ public class GroupEntity {
     @ColumnInfo(name = "name")
     private String name;
 
-    @ColumnInfo(name = "description")
-    private String description;
+    @ColumnInfo(name = "target_amount")
+    private double targetAmount;
 
-    @ColumnInfo(name = "current_members")
-    private int currentMembers;
+    @ColumnInfo(name = "current_amount")
+    private double currentAmount;
 
-    @ColumnInfo(name = "total_members")
-    private int totalMembers;
+    @ColumnInfo(name = "target_member_count")
+    private int targetMemberCount;
 
-    @ColumnInfo(name = "current_balance")
-    private double currentBalance;
+    @ColumnInfo(name = "current_member_count")
+    private int currentMemberCount;
 
-    @ColumnInfo(name = "target_balance")
-    private double targetBalance;
-
-    @ColumnInfo(name = "is_locked")
-    private boolean isLocked;
-
-    @ColumnInfo(name = "contribution_amount")
-    private double contributionAmount;
+    @ColumnInfo(name = "monthly_contribution")
+    private double monthlyContribution;
 
     @ColumnInfo(name = "contribution_frequency")
     private String contributionFrequency;
 
+    @ColumnInfo(name = "created_by")
+    private int createdBy;
+
+    @ColumnInfo(name = "created_at")
+    private long createdAt;
+
+    @ColumnInfo(name = "is_locked")
+    private boolean isLocked;
+
+    @ColumnInfo(name = "lock_reason")
+    private String lockReason;
+
+    @ColumnInfo(name = "lock_request_date")
+    private long lockRequestDate;
+
     @ColumnInfo(name = "next_payout_date")
     private long nextPayoutDate;
 
-    @ColumnInfo(name = "created_by", index = true) // Indexing foreign keys is good practice
-    private int createdBy;
+    @ColumnInfo(name = "group_image")
+    private String groupImage;
 
-    @ColumnInfo(name = "createdAt")
-    private long createdAt;
+    // Default constructor
+    public GroupEntity() {
+        this.currentAmount = 0;
+        this.currentMemberCount = 1;
+        this.isLocked = false;
+        this.createdAt = System.currentTimeMillis();
+    }
 
+    // Getters and Setters
+    public int getId() {
+        return id;
+    }
 
-    // Full constructor that Room uses.
-    // Having one single, unambiguous constructor for Room is the most stable approach.
-    public GroupEntity(int id, String name, String description, int currentMembers, int totalMembers,
-                       double currentBalance, double targetBalance, boolean isLocked, double contributionAmount,
-                       String contributionFrequency, long nextPayoutDate, int createdBy, long createdAt) {
+    public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
         this.name = name;
-        this.description = description;
-        this.currentMembers = currentMembers;
-        this.totalMembers = totalMembers;
-        this.currentBalance = currentBalance;
-        this.targetBalance = targetBalance;
-        this.isLocked = isLocked;
-        this.contributionAmount = contributionAmount;
+    }
+
+    public double getTargetAmount() {
+        return targetAmount;
+    }
+
+    public void setTargetAmount(double targetAmount) {
+        this.targetAmount = targetAmount;
+    }
+
+    public double getCurrentAmount() {
+        return currentAmount;
+    }
+
+    public void setCurrentAmount(double currentAmount) {
+        this.currentAmount = currentAmount;
+    }
+
+    public int getTargetMemberCount() {
+        return targetMemberCount;
+    }
+
+    public void setTargetMemberCount(int targetMemberCount) {
+        this.targetMemberCount = targetMemberCount;
+    }
+
+    public int getCurrentMemberCount() {
+        return currentMemberCount;
+    }
+
+    public void setCurrentMemberCount(int currentMemberCount) {
+        this.currentMemberCount = currentMemberCount;
+    }
+
+    public double getMonthlyContribution() {
+        return monthlyContribution;
+    }
+
+    public void setMonthlyContribution(double monthlyContribution) {
+        this.monthlyContribution = monthlyContribution;
+    }
+
+    public String getContributionFrequency() {
+        return contributionFrequency;
+    }
+
+    public void setContributionFrequency(String contributionFrequency) {
         this.contributionFrequency = contributionFrequency;
-        this.nextPayoutDate = nextPayoutDate;
+    }
+
+    public int getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(int createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
     }
 
-    // A separate, ignored constructor for creating new objects in code.
-    @Ignore
-    public GroupEntity(String name, String description, int totalMembers, double targetBalance,
-                       double contributionAmount, String contributionFrequency, int createdBy) {
-        this.name = name;
-        this.description = description;
-        this.totalMembers = totalMembers;
-        this.targetBalance = targetBalance;
-        this.contributionAmount = contributionAmount;
-        this.contributionFrequency = contributionFrequency;
-        this.createdBy = createdBy;
-        // Set defaults for a new group
-        this.createdAt = System.currentTimeMillis();
-        this.currentBalance = 0.0;
-        this.currentMembers = 1; // The creator
-        this.isLocked = false;
+    public boolean isLocked() {
+        return isLocked;
     }
 
-    // --- Getters and Setters ---
-    // (Your existing getters and setters are fine, no changes needed here)
+    public void setLocked(boolean locked) {
+        isLocked = locked;
+    }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-    public int getCurrentMembers() { return currentMembers; }
-    public void setCurrentMembers(int currentMembers) { this.currentMembers = currentMembers; }
-    public int getTotalMembers() { return totalMembers; }
-    public void setTotalMembers(int totalMembers) { this.totalMembers = totalMembers; }
-    public double getCurrentBalance() { return currentBalance; }
-    public void setCurrentBalance(double currentBalance) { this.currentBalance = currentBalance; }
-    public double getTargetBalance() { return targetBalance; }
-    public void setTargetBalance(double targetBalance) { this.targetBalance = targetBalance; }
-    public boolean isLocked() { return isLocked; }
-    public void setLocked(boolean locked) { isLocked = locked; }
-    public double getContributionAmount() { return contributionAmount; }
-    public void setContributionAmount(double contributionAmount) { this.contributionAmount = contributionAmount; }
-    public String getContributionFrequency() { return contributionFrequency; }
-    public void setContributionFrequency(String contributionFrequency) { this.contributionFrequency = contributionFrequency; }
-    public long getNextPayoutDate() { return nextPayoutDate; }
-    public void setNextPayoutDate(long nextPayoutDate) { this.nextPayoutDate = nextPayoutDate; }
-    public int getCreatedBy() { return createdBy; }
-    void setCreatedBy(int createdBy) { this.createdBy = createdBy; }
-    public long getCreatedAt() { return createdAt; }
-    public void setCreatedAt(long createdAt) { this.createdAt = createdAt; }
+    public String getLockReason() {
+        return lockReason;
+    }
+
+    public void setLockReason(String lockReason) {
+        this.lockReason = lockReason;
+    }
+
+    public long getLockRequestDate() {
+        return lockRequestDate;
+    }
+
+    public void setLockRequestDate(long lockRequestDate) {
+        this.lockRequestDate = lockRequestDate;
+    }
+
+    public long getNextPayoutDate() {
+        return nextPayoutDate;
+    }
+
+    public void setNextPayoutDate(long nextPayoutDate) {
+        this.nextPayoutDate = nextPayoutDate;
+    }
+
+    public String getGroupImage() {
+        return groupImage;
+    }
+
+    public void setGroupImage(String groupImage) {
+        this.groupImage = groupImage;
+    }
+
+    // Helper methods
+    public double getProgressPercentage() {
+        if (targetAmount == 0) return 0;
+        return (currentAmount / targetAmount) * 100;
+    }
+
+    public double getRemainingAmount() {
+        return targetAmount - currentAmount;
+    }
+
+    public int getRemainingMembers() {
+        return targetMemberCount - currentMemberCount;
+    }
+
+    public boolean isComplete() {
+        return currentAmount >= targetAmount && currentMemberCount >= targetMemberCount;
+    }
+
+    @Override
+    public String toString() {
+        return "GroupEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", targetAmount=" + targetAmount +
+                ", currentAmount=" + currentAmount +
+                ", progress=" + getProgressPercentage() + "%" +
+                '}';
+    }
 }
